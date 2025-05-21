@@ -67,20 +67,31 @@ export const OnlyWorkingHoursEnabled: StoryFn<typeof DateTimePicker> = ({ label,
 };
 
 export const Basic: StoryFn<typeof DateTimePicker> = ({ label, minDate, maxDate, showSeconds, clearable }) => {
-  const [date, setDate] = useState<DateTime>(dateTime(today));
+  const [date, setDate] = useState<DateTime>(dateTime('Mon May 21, 2029 3:15PM', 'ddd MMMM DD, YYYY h:mmA'));
+  // const [date, setDate] = useState<DateTime>(dateTime(today));
   // the minDate arg can change from Date object to number, we need to handle this
   // scenario to avoid a crash in the component's story.
   const minDateVal = typeof minDate === 'number' ? new Date(minDate) : minDate;
   const maxDateVal = typeof maxDate === 'number' ? new Date(maxDate) : maxDate;
-
+  console.log(date);
   return (
     <DateTimePicker
       label={label}
       minDate={minDateVal}
       maxDate={maxDateVal}
       date={date}
-      showSeconds={showSeconds}
+      manualInputIsEnabled={false}
+      minuteStep={15}
+      // showSeconds={showSeconds}
+      showSeconds={false}
+      use12Hours={true}
       clearable={clearable}
+      timeZone={'America/New_York'}
+      // disabledMinutes={() => {
+      //   return Array.from({ length: 60 }, (x, i) => i).filter(
+      //     (minute) => ![0,15,30,45].includes(minute)
+      //   );
+      // }}
       onChange={(newValue) => {
         action('on change')(newValue);
         if (newValue) {

@@ -16,12 +16,12 @@ import {
   isDateTime,
   dateTimeForTimeZone,
   getTimeZone,
-  TimeZone,
+  AppEvents,
 } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
 
 import { useStyles2, useTheme2 } from '../../../themes';
-import { t, Trans } from '../../../utils/i18n';
+import { t } from '../../../utils/i18n';
 import { Button } from '../../Button/Button';
 import { InlineField } from '../../Forms/InlineField';
 import { Icon } from '../../Icon/Icon';
@@ -33,6 +33,9 @@ import { TimeOfDayPicker, POPUP_CLASS_NAME } from '../TimeOfDayPicker';
 import { getBodyStyles } from '../TimeRangePicker/CalendarBody';
 import { isValid } from '../utils';
 import { adjustDateForReactCalendar } from '../utils/adjustDateForReactCalendar';
+import { TimeZone } from '@grafana/schema';
+import { PickerProps } from 'rc-picker';
+import { getAppEvents } from '@grafana/runtime';
 
 export interface Props {
   /** Input date for the component */
@@ -57,6 +60,13 @@ export interface Props {
   clearable?: boolean;
   /** Custom timezone for the date/time display */
   timeZone?: TimeZone;
+  /** Use 12 hour time format */
+  use12Hours?: boolean;
+
+  /** Step size for minutes */
+  minuteStep?: PickerProps['minuteStep'];
+
+  manualInputIsEnabled?: boolean;
 }
 
 export const DateTimePicker = ({
@@ -71,7 +81,27 @@ export const DateTimePicker = ({
   timeZone,
   showSeconds = true,
   clearable = false,
+  use12Hours = true,
+  minuteStep = 1,
+  manualInputIsEnabled = true,
 }: Props) => {
+  console.log({
+    date,
+    maxDate,
+    minDate,
+    label,
+    onChange,
+    disabledHours,
+    disabledMinutes,
+    disabledSeconds,
+    timeZone,
+    showSeconds,
+    clearable,
+    use12Hours,
+    minuteStep,
+    manualInputIsEnabled,
+  });
+  return <h1>Dummy</h1>
   const [isOpen, setOpen] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -130,8 +160,34 @@ export const DateTimePicker = ({
     [setOpen]
   );
 
+  const appEvents = getAppEvents();
   return (
-    <div data-testid="date-time-picker" style={{ position: 'relative' }}>
+    <div
+      data-testid="date-time-picker"
+      style={{ position: 'relative' }}
+      onKeyDown={(e) => {
+        if (
+          !manualInputIsEnabled &&
+          !['Tab', 'Shift', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)
+        ) {
+          e.preventDefault();
+          appEvents.publish({
+            type: AppEvents.alertWarning.name,
+            payload: ['Please click the calendar icon to use the date picker to modify the date'],
+          });
+        }
+      }}
+      onClick={(e) => {
+        // If the user clicks on the input while typing is disabled, open the picker
+        // @ts-ignore tagName exist on event target
+        if (!manualInputIsEnabled && e.target.tagName.toLowerCase() === 'input') {
+          appEvents.publish({
+            type: AppEvents.alertWarning.name,
+            payload: ['Please click the calendar icon to use the date picker to modify the date'],
+          });
+        }
+      }}
+    >
       <DateTimeInput
         date={date}
         onChange={onChange}
@@ -149,6 +205,7 @@ export const DateTimePicker = ({
             <FocusScope contain autoFocus restoreFocus>
               <div ref={ref} {...overlayProps} {...dialogProps}>
                 <DateTimeCalendar
+                  use12Hours={use12Hours}
                   date={date}
                   onChange={onApply}
                   isFullscreen={true}
@@ -162,6 +219,7 @@ export const DateTimePicker = ({
                   disabledMinutes={disabledMinutes}
                   disabledSeconds={disabledSeconds}
                   timeZone={timeZone}
+                  minuteStep={minuteStep}
                 />
               </div>
             </FocusScope>
@@ -173,6 +231,7 @@ export const DateTimePicker = ({
               <div ref={ref} {...overlayProps} {...dialogProps}>
                 <div className={styles.modal}>
                   <DateTimeCalendar
+                    use12Hours={use12Hours}
                     date={date}
                     maxDate={maxDate}
                     minDate={minDate}
@@ -184,6 +243,7 @@ export const DateTimePicker = ({
                     disabledMinutes={disabledMinutes}
                     disabledSeconds={disabledSeconds}
                     timeZone={timeZone}
+                    minuteStep={minuteStep}
                   />
                 </div>
               </div>
@@ -200,6 +260,7 @@ interface DateTimeCalendarProps extends Omit<Props, 'label' | 'clearable' | 'onC
   onClose: () => void;
   isFullscreen: boolean;
   style?: React.CSSProperties;
+  use12Hours?: boolean;
 }
 
 type InputProps = Pick<Props, 'onChange' | 'label' | 'date' | 'showSeconds' | 'clearable' | 'timeZone'> & {
@@ -298,6 +359,8 @@ const DateTimeCalendar = React.forwardRef<HTMLDivElement, DateTimeCalendarProps>
       disabledMinutes,
       disabledSeconds,
       timeZone,
+      use12Hours,
+      minuteStep,
     },
     ref
   ) => {
@@ -362,6 +425,8 @@ const DateTimeCalendar = React.forwardRef<HTMLDivElement, DateTimeCalendarProps>
         />
         <div className={styles.time}>
           <TimeOfDayPicker
+            minuteStep={minuteStep ?? 1}
+            use12Hours={use12Hours}
             showSeconds={showSeconds}
             onChange={onChangeTime}
             value={timeOfDayDateTime}
@@ -372,10 +437,10 @@ const DateTimeCalendar = React.forwardRef<HTMLDivElement, DateTimeCalendarProps>
         </div>
         <Stack>
           <Button type="button" onClick={handleApply}>
-            <Trans i18nKey="grafana-ui.date-time-picker.apply">Apply</Trans>
+            <p >Apply</p>
           </Button>
           <Button variant="secondary" type="button" onClick={onClose}>
-            <Trans i18nKey="grafana-ui.date-time-picker.cancel">Cancel</Trans>
+            <p >Cancel</p>
           </Button>
         </Stack>
       </div>

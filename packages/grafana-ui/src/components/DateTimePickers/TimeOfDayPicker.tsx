@@ -53,10 +53,12 @@ export const TimeOfDayPicker = ({
   disabledMinutes,
   disabledSeconds,
   placeholder,
+  // @ts-ignore
+  use12Hours,
   // note: we can't destructure allowEmpty/onChange here
   // in order to discriminate the types properly later in the onChange handler
   ...restProps
-}: Props) => {
+}: Props & { use12Hours?: boolean }) => {
   const styles = useStyles2(getStyles);
   const allowClear = restProps.allowEmpty ?? false;
 
@@ -80,7 +82,7 @@ export const TimeOfDayPicker = ({
         disabledMinutes,
         disabledSeconds,
       })}
-      format={generateFormat(showHour, showSeconds)}
+      format={generateFormat(showHour, showSeconds, use12Hours)}
       minuteStep={minuteStep}
       onChange={(value) => {
         if (isDateTimeInput(value)) {
@@ -91,6 +93,7 @@ export const TimeOfDayPicker = ({
           }
         }
       }}
+      use12Hours={use12Hours}
       picker="time"
       placeholder={placeholder}
       showNow={false}
@@ -101,10 +104,21 @@ export const TimeOfDayPicker = ({
   );
 };
 
-function generateFormat(showHour = true, showSeconds = false) {
-  const maybeHour = showHour ? 'HH:' : '';
+function generateFormat(
+  showHour = true,
+  showSeconds = false,
+  use12Hours = false // Optional parameter for 12-hour format
+) {
+  const maybeHour = showHour
+    ? use12Hours
+      ? 'h:'
+      : 'H:' // 'h' for 12-hour, 'H' for 24-hour (no leading zero)
+    : '';
+
   const maybeSecond = showSeconds ? ':ss' : '';
-  return maybeHour + 'mm' + maybeSecond;
+  const amPm = use12Hours ? ' A' : ''; // Adds AM/PM if 12-hour format
+
+  return maybeHour + 'mm' + maybeSecond + amPm;
 }
 
 interface CaretProps {

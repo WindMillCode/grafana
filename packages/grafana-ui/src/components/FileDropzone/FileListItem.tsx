@@ -1,23 +1,51 @@
 import { css } from '@emotion/css';
 
 import { formattedValueToString, getValueFormat, GrafanaTheme2 } from '@grafana/data';
+import { Button, DropzoneFile, Icon, IconButton, useStyles2 } from '@grafana/ui';
+import { CSSProperties, FC } from 'react';
 
-import { useStyles2 } from '../../themes';
-import { trimFileName } from '../../utils/file';
-import { t, Trans } from '../../utils/i18n';
-import { Button } from '../Button';
-import { Icon } from '../Icon/Icon';
-import { IconButton } from '../IconButton/IconButton';
+// import { useStyles2 } from '../../themes';
+// import { trimFileName } from '../../utils/file';
+// import { Trans } from '../../utils/i18n';
+// import { Button } from '../Button';
+// import { Icon } from '../Icon/Icon';
+// import { IconButton } from '../IconButton/IconButton';
 
-import { DropzoneFile } from './FileDropzone';
+// import { DropzoneFile } from './FileDropzone';
+
+export function trimFileName(fileName: string): string {
+  const nameLength = 16;
+  const delimiter = fileName.lastIndexOf('.');
+  const extension = fileName.substring(delimiter);
+  const file = fileName.substring(0, delimiter);
+
+  if (file.length < nameLength) {
+    return fileName;
+  }
+
+  return `${file.substring(0, nameLength)}...${extension}`;
+}
 
 export const REMOVE_FILE = 'Remove file';
 export interface FileListItemProps {
   file: DropzoneFile;
   removeFile?: (file: DropzoneFile) => void;
+  showName?: boolean;
+  name?: string;
+  showSize?: boolean;
+  showFileIcon?: boolean;
+  fileNameWrapperStyle?: CSSProperties;
 }
 
-export function FileListItem({ file: customFile, removeFile }: FileListItemProps) {
+export const FileListItem: FC<any> = ({
+  file: customFile,
+  removeFile,
+  fileNameWrapperStyle,
+  showName,
+  showFileIcon,
+  showSize,
+  name,
+}: FileListItemProps) => {
   const styles = useStyles2(getStyles);
   const { file, progress, error, abortUpload, retryUpload } = customFile;
 
@@ -26,14 +54,7 @@ export function FileListItem({ file: customFile, removeFile }: FileListItemProps
       return (
         <>
           <span className={styles.error}>{error.message}</span>
-          {retryUpload && (
-            <IconButton
-              name="sync"
-              tooltip={t('grafana-ui.file-dropzone.item-retry', 'Retry')}
-              tooltipPlacement="top"
-              onClick={retryUpload}
-            />
-          )}
+          {retryUpload && <IconButton name="sync" tooltip="Retry" tooltipPlacement="top" onClick={retryUpload} />}
           {removeFile && (
             <IconButton
               className={retryUpload ? styles.marginLeft : ''}
@@ -56,7 +77,7 @@ export function FileListItem({ file: customFile, removeFile }: FileListItemProps
           </span>
           {abortUpload && (
             <Button variant="secondary" type="button" fill="text" onClick={abortUpload}>
-              <Trans i18nKey="grafana-ui.file-dropzone.cancel-upload">Cancel upload</Trans>
+              <p>Cancel upload</p>
             </Button>
           )}
         </>
@@ -75,19 +96,19 @@ export function FileListItem({ file: customFile, removeFile }: FileListItemProps
   };
 
   const valueFormat = getValueFormat('decbytes')(file.size);
-
+  name ??= trimFileName(file.name);
   return (
     <div className={styles.fileListContainer}>
-      <span className={styles.fileNameWrapper}>
-        <Icon name="file-blank" size="lg" aria-hidden={true} />
-        <span className={styles.padding}>{trimFileName(file.name)}</span>
-        <span>{formattedValueToString(valueFormat)}</span>
+      <span title={file.name} className={styles.fileNameWrapper} style={fileNameWrapperStyle}>
+        {(showFileIcon ?? true) && <Icon name="file-blank" size="lg" aria-hidden={true} />}
+        {(showName ?? true) && <span className={styles.padding}>{name}</span>}
+        {(showSize ?? true) && <span>{formattedValueToString(valueFormat)}</span>}
       </span>
 
       <div className={styles.fileNameWrapper}>{renderRightSide()}</div>
     </div>
   );
-}
+};
 
 function getStyles(theme: GrafanaTheme2) {
   return {
