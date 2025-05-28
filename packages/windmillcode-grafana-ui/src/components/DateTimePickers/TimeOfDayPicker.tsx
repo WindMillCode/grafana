@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { css, cx } from '@emotion/css';
 import { Moment } from 'moment';
 import RcPicker, { PickerProps } from 'rc-picker';

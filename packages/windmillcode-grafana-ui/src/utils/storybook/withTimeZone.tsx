@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { Decorator } from '@storybook/react';
 import { useEffect } from 'react';
 

@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { action } from '@storybook/addon-actions';
 import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryFn } from '@storybook/react';

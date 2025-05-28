@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { Trans } from '../../../utils/i18n';
 import { Button } from '../../Button';
 import { Stack } from '../../Layout/Stack/Stack';

@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { toLower, isEmpty, isString } from 'lodash';
 import { useMemo, useCallback } from 'react';
 

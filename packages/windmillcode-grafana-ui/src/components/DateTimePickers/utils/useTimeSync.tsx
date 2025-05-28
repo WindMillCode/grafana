@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { useCallback, useEffect } from 'react';
 import { usePrevious } from 'react-use';
 

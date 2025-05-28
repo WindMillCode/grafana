@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
 import { BootData } from '@grafana/data';

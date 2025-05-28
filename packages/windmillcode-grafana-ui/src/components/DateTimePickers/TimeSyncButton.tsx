@@ -1,5 +1,6 @@
 
 ;
+import * as React from 'react';
 import { t } from '../../utils/i18n';
 import { ToolbarButton } from '../ToolbarButton';
 import { Tooltip } from '../Tooltip';
