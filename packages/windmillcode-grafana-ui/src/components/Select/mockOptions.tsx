@@ -1,3 +1,5 @@
+
+import * as React from 'react';
 import { kebabCase } from 'lodash';
 
 import { SelectableValue } from '@grafana/data';

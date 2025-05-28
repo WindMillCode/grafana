@@ -1,4 +1,4 @@
-import * as React from 'react';
+
 import { DropdownIndicatorProps } from 'react-select';
 
 import { Icon } from '../Icon/Icon';

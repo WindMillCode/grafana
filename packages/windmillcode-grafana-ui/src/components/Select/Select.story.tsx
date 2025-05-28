@@ -1,3 +1,5 @@
+
+import * as React from 'react';
 import { auto } from '@popperjs/core';
 import { action } from '@storybook/addon-actions';
 import { Meta, StoryFn } from '@storybook/react';

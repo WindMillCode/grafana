@@ -1,3 +1,5 @@
+
+;
 import i18next from 'i18next';
 import { ReactElement } from 'react';
 import { Trans as I18NextTrans, initReactI18next } from 'react-i18next'; // eslint-disable-line no-restricted-imports

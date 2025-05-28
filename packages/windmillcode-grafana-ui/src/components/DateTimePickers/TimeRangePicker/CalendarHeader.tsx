@@ -1,3 +1,5 @@
+
+;
 import { selectors } from '@grafana/e2e-selectors';
 
 import { Trans, t } from '../../../utils/i18n';

@@ -1,6 +1,5 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-
 import { KeyValue } from '@grafana/data';
 
 import { t, Trans } from '../../utils/i18n';

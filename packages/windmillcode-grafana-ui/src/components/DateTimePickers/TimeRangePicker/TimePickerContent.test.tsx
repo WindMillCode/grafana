@@ -1,3 +1,5 @@
+
+;
 import { render, RenderResult, screen } from '@testing-library/react';
 
 import { dateTime, TimeRange } from '@grafana/data';

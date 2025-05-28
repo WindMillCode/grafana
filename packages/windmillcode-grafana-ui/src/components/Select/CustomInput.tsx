@@ -1,4 +1,4 @@
-import * as React from 'react';
+
 import { components, InputProps } from 'react-select';
 
 /**

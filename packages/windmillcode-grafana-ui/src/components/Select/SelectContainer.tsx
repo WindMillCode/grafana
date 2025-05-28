@@ -1,4 +1,4 @@
-import * as React from 'react';
+
 
 import { css, cx } from '@emotion/css';
 import { components, ContainerProps as BaseContainerProps, GroupBase } from 'react-select';
