@@ -67,6 +67,8 @@ export interface Props {
   minuteStep?: PickerProps['minuteStep'];
 
   manualInputIsEnabled?: boolean;
+
+  inputFormat?:string
 }
 
 export const DateTimePicker = ({
@@ -84,23 +86,9 @@ export const DateTimePicker = ({
   use12Hours = true,
   minuteStep = 1,
   manualInputIsEnabled = true,
+  inputFormat,
 }: Props) => {
-  console.log({
-    date,
-    maxDate,
-    minDate,
-    label,
-    onChange,
-    disabledHours,
-    disabledMinutes,
-    disabledSeconds,
-    timeZone,
-    showSeconds,
-    clearable,
-    use12Hours,
-    minuteStep,
-    manualInputIsEnabled,
-  });
+
   const [isOpen, setOpen] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -197,6 +185,7 @@ export const DateTimePicker = ({
         showSeconds={showSeconds}
         clearable={clearable}
         timeZone={timeZone}
+        inputFormat={inputFormat}
       />
       {isOpen ? (
         isFullscreen ? (
@@ -262,7 +251,7 @@ interface DateTimeCalendarProps extends Omit<Props, 'label' | 'clearable' | 'onC
   use12Hours?: boolean;
 }
 
-type InputProps = Pick<Props, 'onChange' | 'label' | 'date' | 'showSeconds' | 'clearable' | 'timeZone'> & {
+type InputProps = Pick<Props, 'onChange' | 'label' | 'date' | 'showSeconds' | 'clearable' | 'timeZone' | 'inputFormat'> & {
   isFullscreen: boolean;
   onOpen: (event: FormEvent<HTMLElement>) => void;
 };
@@ -273,9 +262,10 @@ type InputState = {
 };
 
 const DateTimeInput = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ date, label, onChange, onOpen, timeZone, showSeconds = true, clearable = false }, ref) => {
+  ({ date, label, onChange, onOpen, timeZone, showSeconds = true, clearable = false,inputFormat }, ref) => {
     const styles = useStyles2(getStyles);
-    const format = showSeconds ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm';
+
+    const format = inputFormat ?? showSeconds ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm';
     const [internalDate, setInternalDate] = useState<InputState>(() => {
       return {
         value: date ? dateTimeFormat(date, { timeZone }) : !clearable ? dateTimeFormat(dateTime(), { timeZone }) : '',
@@ -321,6 +311,12 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, InputProps>(
         onClick={onOpen}
       />
     );
+
+    console.group()
+    console.log(date)
+    console.log(inputFormat)    
+    console.log(internalDate.value)
+    console.groupEnd()
     return (
       <InlineField label={label} invalid={!!(internalDate.value && internalDate.invalid)} className={styles.field}>
         <Input
