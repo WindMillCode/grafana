@@ -48,8 +48,8 @@
     "./LICENSE_APACHE2"
   ],
   "scripts": {
-    "dev": "tsc -p -w ./tsconfig.build.json && rollup -c rollup.config.ts --configPlugin esbuild",
-    "build": "tsc -p ./tsconfig.build.json && rollup -c rollup.config.ts --configPlugin esbuild",
+    "dev": "tsc --noEmitOnError false -p -w ./tsconfig.build.json && rollup -c rollup.config.ts --configPlugin esbuild",
+    "build": "tsc --noEmitOnError false -p ./tsconfig.build.json && rollup -c rollup.config.ts --configPlugin esbuild",
     "bundle": "rollup -c rollup.config.ts --configPlugin esbuild",
     "clean": "rimraf ./dist ./compiled ./unstable ./package.tgz",
     "storybook": "storybook dev -p 9001 -c .storybook --no-open",
@@ -70,7 +70,7 @@
     "@grafana/data": "12.1.0-pre",
     "@grafana/e2e-selectors": "12.1.0-pre",
     "@grafana/faro-web-sdk": "^1.13.2",
-    "@grafana/i18n": "12.1.0-pre",
+    "@grafana/i18n": "0.0.1",
     "@grafana/schema": "12.1.0-pre",
     "@hello-pangea/dnd": "17.0.0",
     "@leeoniya/ufuzzy": "1.0.18",

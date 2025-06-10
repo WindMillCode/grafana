@@ -265,26 +265,31 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ date, label, onChange, onOpen, timeZone, showSeconds = true, clearable = false,inputFormat }, ref) => {
     const styles = useStyles2(getStyles);
 
-    const format = inputFormat ?? showSeconds ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm';
+    const format = inputFormat ?? (showSeconds ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm');
     const [internalDate, setInternalDate] = useState<InputState>(() => {
       return {
-        value: date ? dateTimeFormat(date, { timeZone }) : !clearable ? dateTimeFormat(dateTime(), { timeZone }) : '',
+        value: date ? dateTimeFormat(date, { format,timeZone }) : !clearable ? dateTimeFormat(dateTime(), { format,timeZone }) : '',
         invalid: false,
       };
     });
 
+
+
     useEffect(() => {
       if (date) {
         const formattedDate = dateTimeFormat(date, { format, timeZone });
+        const normalizedDate = dateTimeFormat(date, {  timeZone });
         setInternalDate({
-          invalid: !isValid(formattedDate),
+          invalid: !isValid(normalizedDate),
           value: isDateTime(date) ? formattedDate : date,
         });
       }
     }, [date, format, timeZone]);
 
     const onChangeDate = useCallback((event: FormEvent<HTMLInputElement>) => {
-      const isInvalid = !isValid(event.currentTarget.value);
+      const normalizedDate = dateTimeFormat(event.currentTarget.value, { timeZone })
+      console.log(normalizedDate)
+      const isInvalid = !isValid(normalizedDate);
       setInternalDate({
         value: event.currentTarget.value,
         invalid: isInvalid,
@@ -312,11 +317,13 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, InputProps>(
       />
     );
 
-    console.group()
-    console.log(date)
-    console.log(inputFormat)    
-    console.log(internalDate.value)
-    console.groupEnd()
+    // console.group({
+    //   value:internalDate.value,
+    //   invalid:internalDate.invalid,
+    //   internalDate
+    // })
+    // console.groupEnd()   
+
     return (
       <InlineField label={label} invalid={!!(internalDate.value && internalDate.invalid)} className={styles.field}>
         <Input
