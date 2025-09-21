@@ -3381,6 +3381,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@grafana/i18n@npm:0.0.1":
+  version: 0.0.1
+  resolution: "@grafana/i18n@npm:0.0.1"
+  checksum: 10/79844f8627197672b84e59e565b57d9a04acb7b333688ea552218f6313a633913661b955dfa93dcd59f6141a0079cb1e9cfef777ff7b869e17539dbaba2e4ca3
+  languageName: node
+  linkType: hard
+
 "@grafana/i18n@npm:12.1.0-pre, @grafana/i18n@workspace:*, @grafana/i18n@workspace:packages/grafana-i18n":
   version: 0.0.0-use.local
   resolution: "@grafana/i18n@workspace:packages/grafana-i18n"
@@ -11312,7 +11319,7 @@ __metadata:
     "@grafana/data": "npm:12.1.0-pre"
     "@grafana/e2e-selectors": "npm:12.1.0-pre"
     "@grafana/faro-web-sdk": "npm:^1.13.2"
-    "@grafana/i18n": "npm:12.1.0-pre"
+    "@grafana/i18n": "npm:0.0.1"
     "@grafana/schema": "npm:12.1.0-pre"
     "@grafana/tsconfig": "npm:^2.0.0"
     "@hello-pangea/dnd": "npm:17.0.0"
